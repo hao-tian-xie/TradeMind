@@ -7,6 +7,7 @@ from pathlib import Path
 import json
 import logging
 from typing import Dict, List, Optional
+from IPython.display import display, HTML  # 导入 IPython.display 模块以显示 HTML
 
 class MarketAnalyzer:
     def __init__(self):
@@ -132,10 +133,6 @@ class MarketAnalyzer:
         return 100 - (100 / (1 + rs)).iloc[-1]
 
     def generate_html_report(self, results: List[Dict], group_name: str = "全部标的") -> str:
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M')
-        filename = f"market_analysis_{group_name}_{timestamp}.html"
-        file_path = self.results_path / filename
-
         html_content = f"""
         <!DOCTYPE html>
         <html>
@@ -263,10 +260,7 @@ class MarketAnalyzer:
         </html>
         """
 
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(html_content)
-
-        return str(file_path)
+        return html_content  # 直接返回 HTML 内容字符串
 
 def main():
     analyzer = MarketAnalyzer()
@@ -290,8 +284,8 @@ def main():
                 all_results.extend(results)
             
             if all_results:
-                report_path = analyzer.generate_html_report(all_results, "全部标的")
-                print(f"\n分析报告已生成: {report_path}")
+                html_content = analyzer.generate_html_report(all_results, "全部标的")
+                display(HTML(html_content))  # 直接显示 HTML 报告
                 print(f"成功分析: {len(all_results)}/{total_symbols} 个标的")
             else:
                 print("\n没有可分析的数据")
@@ -313,8 +307,8 @@ def main():
                 results = analyzer.analyze_market(group_name)
                 
                 if results:
-                    report_path = analyzer.generate_html_report(results, group_name)
-                    print(f"\n分析报告已生成: {report_path}")
+                    html_content = analyzer.generate_html_report(results, group_name)
+                    display(HTML(html_content))  # 直接显示 HTML 报告
                     print(f"成功分析: {len(results)}/{symbol_count} 个标的")
                 else:
                     print("\n没有可分析的数据")
