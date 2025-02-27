@@ -8,6 +8,13 @@ import json
 import logging
 from typing import Dict, List, Optional
 
+# 检查是否在 Google Colab 环境中运行，并导入下载模块
+try:
+    from google.colab import files
+    IN_COLAB = True
+except ImportError:
+    IN_COLAB = False
+
 class MarketAnalyzer:
     def __init__(self):
         self.setup_logging()
@@ -266,6 +273,10 @@ class MarketAnalyzer:
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(html_content)
 
+        # 在 Colab 环境中自动下载文件
+        if IN_COLAB:
+            files.download(str(file_path))
+
         return str(file_path)
 
 def main():
@@ -292,6 +303,10 @@ def main():
             if all_results:
                 report_path = analyzer.generate_html_report(all_results, "全部标的")
                 print(f"\n分析报告已生成: {report_path}")
+                if IN_COLAB:
+                    print("文件将自动下载到您的本地机器。")
+                else:
+                    print("请在本地文件中查看报告。")
                 print(f"成功分析: {len(all_results)}/{total_symbols} 个标的")
             else:
                 print("\n没有可分析的数据")
@@ -315,6 +330,10 @@ def main():
                 if results:
                     report_path = analyzer.generate_html_report(results, group_name)
                     print(f"\n分析报告已生成: {report_path}")
+                    if IN_COLAB:
+                        print("文件将自动下载到您的本地机器。")
+                    else:
+                        print("请在本地文件中查看报告。")
                     print(f"成功分析: {len(results)}/{symbol_count} 个标的")
                 else:
                     print("\n没有可分析的数据")
