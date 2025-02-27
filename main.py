@@ -7,7 +7,6 @@ from pathlib import Path
 import json
 import logging
 from typing import Dict, List, Optional
-from google.colab import files  # 用于提供下载功能
 
 class MarketAnalyzer:
     def __init__(self):
@@ -69,7 +68,7 @@ class MarketAnalyzer:
         
         for symbol in symbols:
             try:
-                name = self.watchlists_data[group_name].get(symbol, symbol)
+                name = self.watchlists_data[group_name].get(symbol, symbol) if hasattr(self, 'watchlists_data') else symbol
                 ticker = yf.Ticker(symbol)
                 hist = ticker.history(period="1y")
                 
@@ -294,7 +293,6 @@ def main():
                 report_path = analyzer.generate_html_report(all_results, "全部标的")
                 print(f"\n分析报告已生成: {report_path}")
                 print(f"成功分析: {len(all_results)}/{total_symbols} 个标的")
-                files.download(report_path)  # 提供下载链接
             else:
                 print("\n没有可分析的数据")
                 
@@ -318,7 +316,6 @@ def main():
                     report_path = analyzer.generate_html_report(results, group_name)
                     print(f"\n分析报告已生成: {report_path}")
                     print(f"成功分析: {len(results)}/{symbol_count} 个标的")
-                    files.download(report_path)  # 提供下载链接
                 else:
                     print("\n没有可分析的数据")
             else:
