@@ -156,5 +156,9 @@
         "TMUS": "T-Mobile美国",
         "T": "美国电话电报",
         "KDDIY": "KDDI电信"
+    },
+    "自选": {
+        "NVDY": "NVDA期权收益策略ETF",
+        "DXCM": "德康医疗"
     }
 }
